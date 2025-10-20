@@ -11,9 +11,10 @@ const Profile = () => {
 		lastName: "",
 		roles: [{ id: "", name: "" }]
 	})
+	
 
 	// 👉 Khởi tạo rỗng để tránh render dữ liệu giả
-	const [bookings, setBookings] = useState([])
+	const [bookings, setBookings] = useState([]);
 
 	const [message, setMessage] = useState("")
 	const [errorMessage, setErrorMessage] = useState("")
@@ -44,7 +45,6 @@ const Profile = () => {
 		const fetchBookings = async () => {
 			try {
 				const response = await getBookingsByUserId(userId, token)
-				console.log("Bookings fetched:", response)
 				setBookings(response.data)
 			} catch (error) {
 				console.error("Error fetching bookings:", error)
@@ -77,6 +77,22 @@ const Profile = () => {
 			}
 		}
 	}
+
+	useEffect(() => {
+  if (!user.email) return; // tránh gọi khi email chưa có
+  const fetchData = async () => {
+    try {
+      const data = await getBookingsByUserId(user.email);
+      setBookings(data || []);
+    } catch (err) {
+      console.error("Error fetching bookings:", err);
+      setBookings([]);
+    }
+  };
+
+  fetchData();
+}, [user.email]);
+
 
 
 	return (
@@ -152,7 +168,7 @@ const Profile = () => {
 							</div>
 							<h4 className="card-title text-center">Booking History</h4>
 
-							{bookings.length > 0 ? (
+							{bookings && bookings.length > 0 ? (
 								<table className="table table-bordered table-hover shadow">
 									<thead>
 										<tr>
@@ -168,11 +184,20 @@ const Profile = () => {
 									<tbody>
 										{bookings.map((booking, index) => (
 											<tr key={index}>
-												<td>{booking.id}</td>
+												<td>{booking.bookingId}</td>
 												<td>{booking.room?.id || "N/A"}</td>
 												<td>{booking.room?.roomType || "N/A"}</td>
-												<td>{moment(booking.checkInDate).format("MMM Do, YYYY")}</td>
-												<td>{moment(booking.checkOutDate).format("MMM Do, YYYY")}</td>
+												<td>
+  												{booking.checkInDate
+    											? moment(new Date(...booking.checkInDate)).format("MMM Do, YYYY")
+    											: "N/A"}
+												</td>
+												<td>
+  												{booking.checkOutDate
+    											? moment(new Date(...booking.checkOutDate)).format("MMM Do, YYYY")
+    											: "N/A"}
+												</td>
+
 												<td>{booking.bookingConfirmationCode}</td>
 												<td className="text-success">On-going</td>
 											</tr>

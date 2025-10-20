@@ -42,6 +42,8 @@ export const getHeader = () => {
 //   }
 // };
 
+
+
 export async function addRoom(photo, roomType, roomPrice) {
     const formData = new FormData();
     formData.append("photo", photo);
@@ -270,34 +272,36 @@ export async function getUser(userId) {
 }
 
 /* This is the function to get user bookings by the user id */
-// export const getBookingsByUserId = async (email) => {
-//   try {
-//     const token = localStorage.getItem("token");
-//     if (!token) throw new Error("No token found. Please login.");
-//     const response = await api.get(`/bookings/user/${email}/bookings`, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "application/json"
-//       }
-//     });
-	
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error fetching bookings:", error.response || error.message);
-//     throw error;
-//   }
-// };
+export const getBookingsByUserId = async (email) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No token found, please login.");
 
+    const response = await api.get(`/bookings/user/${email}/bookings`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-export const getBookingsByUserId = async () => {
-  const token = localStorage.getItem("token"); // hoặc nơi bạn lưu token
-  return await axios.get("http://localhost:2204/bookings/user/bookings", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    throw error;
+  }
 };
+
+
+
+// export const getBookingsByUserId = async () => {
+//   const token = localStorage.getItem("token"); // hoặc nơi bạn lưu token
+//   return await axios.get("http://localhost:2204/bookings/user/bookings", {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//       "Content-Type": "application/json",
+//     },
+//   });
+// };
 
 export const fetchRoomPriceById = async (roomId) => {
   const token = localStorage.getItem("token");
