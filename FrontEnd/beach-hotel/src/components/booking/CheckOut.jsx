@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import BookingForm from "./BookingForm";
-import { getRoomById } from "../utils/ApiFunctions";
+import { getRoomById, bookRoom } from "../utils/ApiFunctions";
 import {
   FaTv,
   FaUtensils,
@@ -23,7 +23,6 @@ const CheckOut = () => {
     roomType: "",
     roomPrice: ""
   });
-
 
 
   const { roomId } = useParams();
@@ -54,13 +53,6 @@ const CheckOut = () => {
         });
     }, 2000);
   }, [roomId]);
-
-  // xử lý submit booking (ví dụ)
-  const handleBooking = () => {
-    console.log("Booking confirmed:", booking);
-    // chỗ này bạn có thể gọi API bookRoom
-  };
-
 
   console.log("isSubmitted:", isSubmitted);
   console.log("booking:", booking);
@@ -144,7 +136,11 @@ const CheckOut = () => {
               booking={booking}
               payment={payment}
               isFormValid={isValidated}
-              onConfirm={handleBooking}
+              onConfirm={async () => {
+              await bookRoom(roomId, booking); // ✅ Gọi API ở bước này
+              alert("Booking confirmed!");
+              }}
+              onBack={() => setIsSubmitted(false)} // quay lại form nếu muốn sửa
             />
           )}
         </div>

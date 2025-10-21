@@ -28,7 +28,6 @@ const BookingsTable = ({ bookingInfo, handleBookingCancellation }) => {
   const totalNumberOfGuest = (booking) => {
     return booking.numOfAdults + booking.numOfChildren;
   }
-console.log("bookingInfo:", bookingInfo);
 
   return (
     <section className='p-4'>

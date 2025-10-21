@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, FormControl, Button } from "react-bootstrap";
 import moment from "moment";
-import { fetchRoomPriceById, bookRoom } from "../utils/ApiFunctions";
+import { fetchRoomPriceById } from "../utils/ApiFunctions";
 
 const BookingForm = ({ roomId, booking, setBooking, setIsValidated, setIsSubmitted, setPayment }) => {
   const [isValidated, setLocalValidated] = useState(false);
@@ -55,8 +55,7 @@ const BookingForm = ({ roomId, booking, setBooking, setIsValidated, setIsSubmitt
       e.stopPropagation();
     } else {
       try {
-        const result = await bookRoom(roomId, booking);
-        console.log("Booking saved:", result);
+       
         setPayment(calculatePayment());
         setIsSubmitted(true);
       } catch (err) {
@@ -72,7 +71,7 @@ const BookingForm = ({ roomId, booking, setBooking, setIsValidated, setIsSubmitt
       <h4>Reserve Room</h4>
       <Form noValidate validated={isValidated} onSubmit={handleSubmit}>
         <Form.Group className="mb-2">
-          <Form.Label>Full Name:</Form.Label>
+          <Form.Label className= "d-block text-start">Full Name:</Form.Label>
           <FormControl
             required
             type="text"
@@ -85,7 +84,7 @@ const BookingForm = ({ roomId, booking, setBooking, setIsValidated, setIsSubmitt
         </Form.Group>
 
         <Form.Group className="mb-2">
-          <Form.Label>Email:</Form.Label>
+          <Form.Label className="d-block text-start">Email:</Form.Label>
           <FormControl
             required
             type="email"
@@ -98,7 +97,7 @@ const BookingForm = ({ roomId, booking, setBooking, setIsValidated, setIsSubmitt
         </Form.Group>
 
         <Form.Group className="mb-2">
-          <Form.Label>Check-in Date:</Form.Label>
+          <Form.Label className="d-block text-start">Check-in Date:</Form.Label>
           <FormControl
             required
             type="date"
@@ -109,7 +108,7 @@ const BookingForm = ({ roomId, booking, setBooking, setIsValidated, setIsSubmitt
         </Form.Group>
 
         <Form.Group className="mb-2">
-          <Form.Label>Check-out Date:</Form.Label>
+          <Form.Label className="d-block text-start">Check-out Date:</Form.Label>
           <FormControl
             required
             type="date"
@@ -120,7 +119,7 @@ const BookingForm = ({ roomId, booking, setBooking, setIsValidated, setIsSubmitt
         </Form.Group>
 
         <Form.Group className="mb-2">
-          <Form.Label>Adults:</Form.Label>
+          <Form.Label className="d-block text-start">Adults:</Form.Label>
           <FormControl
             required
             type="number"
@@ -132,7 +131,7 @@ const BookingForm = ({ roomId, booking, setBooking, setIsValidated, setIsSubmitt
         </Form.Group>
 
         <Form.Group className="mb-2">
-          <Form.Label>Children:</Form.Label>
+          <Form.Label className="d-block text-start">Children:</Form.Label>
           <FormControl
             type="number"
             min={0}

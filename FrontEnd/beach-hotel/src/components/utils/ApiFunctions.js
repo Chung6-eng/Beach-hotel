@@ -13,69 +13,35 @@ export const getHeader = () => {
 	}
 }
 
+export const addRoom = async (photo, roomType, roomPrice, description) => {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No token found. Please login as admin.");
 
-/* This function adds a new room room to the database */
-// export const addRoom = async ({ photo, roomType, roomPrice }) => {
-//   try {
-//     const token = localStorage.getItem("token");
-//     console.log("Token sent:", token);
+  const formData = new FormData();
+  formData.append("photo", photo);
+  formData.append("roomType", roomType);
+  formData.append("roomPrice", roomPrice);
+  formData.append("description", description);
 
-//     const formData = new FormData();
-//     formData.append("photo", photo);
-//     formData.append("roomType", roomType);
-//     formData.append("roomPrice", roomPrice);
+  try {
+    const response = await axios.post(
+      "http://localhost:2204/rooms/add/new-room",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error adding room:", error);
+    if (error.response) console.error("Error response:", error.response.data);
+    throw error;
+  }
+};
 
-//     const response = await axios.post(
-//       "http://localhost:2204/rooms/add/new-room",
-//       formData,
-//       {
-//         headers: {
-//           "Authorization": `Bearer ${token}`,
-//           "Content-Type": "multipart/form-data"
-//         },
-//       }
-//     );
-
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error adding room:", error);
-//   }
-// };
-
-
-
-export async function addRoom(photo, roomType, roomPrice) {
-    const formData = new FormData();
-    formData.append("photo", photo);
-    formData.append("roomType", roomType);
-    formData.append("roomPrice", roomPrice);
-
-    const token = localStorage.getItem("token");
-    console.log("Token:", token);
-    console.log("FormData contents:", {
-        photo: photo.name,
-        roomType,
-        roomPrice
-    });
-
-    try {
-        const response = await axios.post(
-            "http://localhost:2204/rooms/add/new-room",
-            formData,
-            {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            }
-        );
-        console.log("Success:", response.data);
-        return response.data;
-    } catch (error) {
-        console.error("Error adding room:", error);
-        console.error("Error response:", error.response?.data);
-        throw error;
-    }
-}
 
 
 
@@ -120,22 +86,27 @@ export async function deleteRoom(roomId) {
 	}
 }
 /* This function update a room */
-export async function updateRoom(roomId, roomData) {
-	const formData = new FormData()
-	formData.append("roomType", roomData.roomType)
-	formData.append("roomPrice", roomData.roomPrice)
-	formData.append("photo", roomData.photo)
-	
-	const token = localStorage.getItem("token")
-	
-	const response = await api.put(`/rooms/update/${roomId}`, formData, {
-		headers: {
-			Authorization: `Bearer ${token}`
-			// BỎ Content-Type
-		}
-	})
-	return response
-}
+export const updateRoom = async (roomId, formData) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await axios.put(
+      `http://localhost:2204/rooms/${roomId}/update`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating room:", error);
+    throw error;
+  }
+};
+
 
 /* This funcction gets a room by the id */
 export async function getRoomById(roomId) {
@@ -188,13 +159,17 @@ export async function getBookingByConfirmationCode(confirmationCode) {
 }
 
 /* This is the function to cancel user booking */
-export async function cancelBooking(bookingId) {
-	try {
-		const result = await api.delete(`/bookings/booking/${bookingId}/delete`)
-		return result.data
-	} catch (error) {
-		throw new Error(`Error cancelling booking :${error.message}`)
-	}
+export const cancelBooking = async (bookingId) => {
+  try {
+    const response = await api.delete(
+      `/bookings/booking/${bookingId}/delete`,
+      { headers: getHeader() } // 👈 Thêm dòng này
+    )
+    return response.data
+  } catch (error) {
+    console.error("Error canceling booking:", error)
+    throw error
+  }
 }
 
 /* This function gets all availavle rooms from the database with a given date and a room type */

@@ -29,34 +29,38 @@ const BookingSummary = ({ booking, payment, isFormValid, onConfirm }) => {
 	return (
 			<div className="card card-body ">
 				<h4 className="card-title hotel-color">Reservation Summary</h4>
-				<p>
+				<p className="text-start">
 					Name: <strong>{booking.guestFullName}</strong>
 				</p>
-				<p>
+				<p className="text-start">
 					Email: <strong>{booking.guestEmail}</strong>
 				</p>
-				<p>
+				<p className="text-start">
 					Check-in Date: <strong>{moment(booking.checkInDate).format("MMM Do YYYY")}</strong>
 				</p>
-				<p>
+				<p className="text-start">
 					Check-out Date: <strong>{moment(booking.checkOutDate).format("MMM Do YYYY")}</strong>
 				</p>
-				<p>
+				<p className="text-start">
 					Number of Days Booked: <strong>{numberOfDays}</strong>
 				</p>
 
 				<div>
 					<h5 className="hotel-color">Number of Guest</h5>
-					<strong>
-						Adult{booking.numberOfAdults > 1 ? "s" : ""} : {booking.numberOfAdults}
+					
+					<strong className="text-start mb-3">
+						<p>Adult{booking.numberOfAdults > 1 ? "s" : ""} : {booking.numberOfAdults}</p>
 					</strong>
-					<strong>
+					<strong className="text-start">
 						<p>Children : {booking.numberOfChildren}</p>
 					</strong>
 				</div>
-
+				
 				{payment > 0 ? (
+						
 					<>
+							<img className="img-fluid w-auto rounded mx-auto d-block"  style={{ height: "200px" }} src={"/src/assets/images/QR.png"} alt="Ảnh QR" />
+						
 						<p>
 							Total payment: <strong>${payment}</strong>
 						</p>

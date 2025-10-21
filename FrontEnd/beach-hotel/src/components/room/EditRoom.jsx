@@ -7,6 +7,7 @@ const EditRoom = () => {
     photo: null,
     roomType: "",
     roomPrice: "",
+    description: ""
   })
 
 
@@ -47,33 +48,31 @@ const handleImageChange = (e) => {
   setImagePreview(URL.createObjectURL(selectedImage));
 };
 
-
-  const handleSubmit = async (event) => {
+const handleSubmit = async (event) => {
   event.preventDefault();
   console.log("Submitting room data:", room);
 
   try {
-    const updatedRoom = await updateRoom(roomId, room);
+    const formData = new FormData();
+    formData.append("roomType", room.roomType);
+    formData.append("roomPrice", room.roomPrice);
+    formData.append("description", room.description || "");
+    if (room.photo) formData.append("photo", room.photo);
+
+    const updatedRoom = await updateRoom(roomId, formData);
 
     setSuccessMessage("Room updated successfully!");
+    setErrorMessage("");
     setRoom(updatedRoom);
 
     if (updatedRoom.photo) {
       setImagePreview(`data:image/jpeg;base64,${updatedRoom.photo}`);
     }
-
-    setErrorMessage("");
   } catch (error) {
     console.error(error);
     setErrorMessage("Error updating room");
   }
 };
-
-
-
-
-
-
 
   return (
     <div className="container mt-5 mb-5">
@@ -128,6 +127,23 @@ const handleImageChange = (e) => {
                 onChange={handleInputChange}
               />
             </div>
+
+            <div className="mb-3 row">
+                            <label htmlFor="roomDescription" className="col-sm-3 col-form-label text-start">
+                                Description
+                            </label>
+                            <div>
+                                <textarea
+                                    className="form-control"
+                                    id="roomDescription"
+                                    name="roomDescription"
+                                    rows="3"
+                                    placeholder="Enter room description..."
+                                    value={room.description ?? ""}
+                                    onChange={handleInputChange}
+                                ></textarea>
+                            </div>
+                        </div>
 
             {/* Room Photo */}
             <div className="mb-3 row">

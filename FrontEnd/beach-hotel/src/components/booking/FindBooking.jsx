@@ -10,21 +10,20 @@ const FindBooking = () => {
 	const [bookingInfo, setBookingInfo] = useState({
 		id: "",
 		bookingConfirmationCode: "",
-		room: { id: "", roomType: "" },
 		roomNumber: "",
+		roomType: "",
 		checkInDate: "",
 		checkOutDate: "",
 		guestName: "",
 		guestEmail: "",
 		numOfAdults: "",
 		numOfChildren: "",
-		totalNumOfGuests: ""
+		totalNumOfGuest: ""
 	})
 
 	const emptyBookingInfo = {
 		id: "",
 		bookingConfirmationCode: "",
-		room: { id: "", roomType: "" },
 		roomNumber: "",
 		checkInDate: "",
 		checkOutDate: "",
@@ -32,7 +31,7 @@ const FindBooking = () => {
 		guestEmail: "",
 		numOfAdults: "",
 		numOfChildren: "",
-		totalNumOfGuests: ""
+		totalNumOfGuest: ""
 	}
 	const [isDeleted, setIsDeleted] = useState(false)
 
@@ -48,6 +47,9 @@ const FindBooking = () => {
 			const data = await getBookingByConfirmationCode(confirmationCode)
 			setBookingInfo(data)
 			setError(null)
+			
+console.log("Booking data:", data)
+setBookingInfo(data)
 		} catch (error) {
 			setBookingInfo(emptyBookingInfo)
 			if (error.response && error.response.status === 404) {
@@ -68,6 +70,7 @@ const FindBooking = () => {
 			setBookingInfo(emptyBookingInfo)
 			setConfirmationCode("")
 			setError(null)
+			
 		} catch (error) {
 			setError(error.message)
 		}
@@ -77,6 +80,7 @@ const FindBooking = () => {
 		}, 2000)
 	}
 
+	
 	return (
 		<>
 			<div className="container mt-5 d-flex flex-column justify-content-center align-items-center">
@@ -104,11 +108,10 @@ const FindBooking = () => {
 				) : error ? (
 					<div className="text-danger">Error: {error}</div>
 				) : bookingInfo.bookingConfirmationCode ? (
-					<div className="col-md-6 mt-4 mb-5">
+					<div className="col-md-6 mt-4 mb-5 text-start">
 						<h3>Booking Information</h3>
 						<p className="text-success">Confirmation Code: {bookingInfo.bookingConfirmationCode}</p>
-						<p>Room Number: {bookingInfo.room.id}</p>
-						<p>Room Type: {bookingInfo.room.roomType}</p>
+						<p>Room Number: {bookingInfo.roomId}</p>
 						<p>
 							Check-in Date:{" "}
 							{moment(bookingInfo.checkInDate).subtract(1, "month").format("MMM Do, YYYY")}
@@ -117,11 +120,11 @@ const FindBooking = () => {
 							Check-out Date:{" "}
 							{moment(bookingInfo.checkInDate).subtract(1, "month").format("MMM Do, YYYY")}
 						</p>
-						<p>Full Name: {bookingInfo.guestName}</p>
+						<p>Full Name: {bookingInfo.guestFullName}</p>
 						<p>Email Address: {bookingInfo.guestEmail}</p>
 						<p>Adults: {bookingInfo.numOfAdults}</p>
 						<p>Children: {bookingInfo.numOfChildren}</p>
-						<p>Total Guest: {bookingInfo.totalNumOfGuests}</p>
+						<p>Total Guest: {bookingInfo.totalNumOfGuest}</p>
 
 						{!isDeleted && (
 							<button

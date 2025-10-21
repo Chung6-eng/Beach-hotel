@@ -38,12 +38,12 @@ const Login = () => {
 	}
 
 	return (
-		<section className="container col-6 mt-5 mb-5">
+		<section className="container col-3 mt-5 mb-5">
 			{errorMessage && <p className="alert alert-danger">{errorMessage}</p>}
 			<h2>Login</h2>
 			<form onSubmit={handleSubmit}>
 				<div className="row mb-3">
-					<label htmlFor="email" className="col-sm-2 col-form-label">
+					<label htmlFor="email" className="col-sm-2 col-form-label text-start">
 						Email
 					</label>
 					<div>
@@ -60,7 +60,7 @@ const Login = () => {
 				</div>
 
 				<div className="row mb-3">
-					<label htmlFor="password" className="col-sm-2 col-form-label">
+					<label htmlFor="password" className="col-sm-2 col-form-label text-start">
 						Password
 					</label>
 					<div>
