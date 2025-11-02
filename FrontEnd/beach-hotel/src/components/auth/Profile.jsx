@@ -22,7 +22,7 @@ const Profile = () => {
 	useEffect(() => {
 		const fetchUser = async () => {
 			try {
-				const userData = await getUser(userId)  // No token param needed
+				const userData = await getUser(userId)
 				setUser(userData)
 			} catch (error) {
 				console.error("Error fetching user:", error)
@@ -35,33 +35,33 @@ const Profile = () => {
 	}, [userId, token])
 
 	// Fetch bookings - Only one useEffect, using userId
-useEffect(() => {
-    const fetchBookings = async () => {
-        if (!token) {
-            setErrorMessage("You are not logged in");
-            return;
-        }
-        try {
-            const data = await getBookingsByUserId(user.email);
-            setBookings(data);
-        } catch (error) {
-            console.error("Error fetching bookings:", error);
-            if (error.response?.status === 401) {
-                setErrorMessage("Session expired. Logging out...");
-                // Clear storage and redirect immediately
-                localStorage.removeItem("token");
-                localStorage.removeItem("userId");
-                localStorage.removeItem("userRole");
-                navigate("/login");  // Assuming your login route is /login
-            } else {
-                setErrorMessage("Failed to load booking history");
-            }
-        }
-    };
-    if (user.email && token) {
-        fetchBookings();
-    }
-}, [user.email, token, navigate]);
+	useEffect(() => {
+		const fetchBookings = async () => {
+			if (!token) {
+				setErrorMessage("You are not logged in");
+				return;
+			}
+			try {
+				const data = await getBookingsByUserId(user.email);
+				setBookings(data);
+			} catch (error) {
+				console.error("Error fetching bookings:", error);
+				if (error.response?.status === 401) {
+					setErrorMessage("Session expired. Logging out...");
+					// Clear storage and redirect immediately
+					localStorage.removeItem("token");
+					localStorage.removeItem("userId");
+					localStorage.removeItem("userRole");
+					navigate("/login");  // Assuming your login route is /login
+				} else {
+					setErrorMessage("Failed to load booking history");
+				}
+			}
+		};
+		if (user.email && token) {
+			fetchBookings();
+		}
+	}, [user.email, token, navigate]);
 
 	const handleDeleteAccount = async () => {
 		const confirmed = window.confirm(
@@ -76,7 +76,7 @@ useEffect(() => {
 				localStorage.removeItem("userRole")
 				navigate("/")
 				window.location.reload()
-			// eslint-disable-next-line no-unused-vars
+				// eslint-disable-next-line no-unused-vars
 			} catch (error) {
 				setErrorMessage("Failed to delete account")
 			}

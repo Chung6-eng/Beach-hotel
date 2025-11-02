@@ -70,14 +70,14 @@ public class WebSecurityConfig {
                         // 3. BOOKINGS - Cần đăng nhập
                         .requestMatchers("/bookings/room/*/booking").permitAll() // Đặt phòng công khai
                         .requestMatchers("/bookings/confirmation/*").permitAll() // Xem confirmation công khai
-                        .requestMatchers("/bookings/all-bookings").hasRole("MANAGER") // Chỉ MANAGER xem tất cả
+                        .requestMatchers("/bookings/all-bookings").hasAnyRole("STAFF","MANAGER") // Chỉ MANAGER xem tất cả
                         .requestMatchers("/bookings/**").authenticated() // Các endpoint khác cần đăng nhập
 
                         // 4. USERS - Cần đăng nhập
-                        .requestMatchers("/users/**").hasAnyRole("USER", "MANAGER")
+                        .requestMatchers("/users/**").hasAnyRole("USER","STAFF", "MANAGER")
 
                         // 5. ROLES - Chỉ MANAGER
-                        .requestMatchers("/roles/**").hasRole("MANAGER")
+                        .requestMatchers("/roles/**").hasAnyRole("MANAGER","STAFF","USER")
 
                         // 6. TẤT CẢ các request khác - Cần đăng nhập
                         .anyRequest().authenticated()

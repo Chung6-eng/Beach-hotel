@@ -127,16 +127,18 @@ export async function bookRoom(roomId, booking) {
 }
 
 /* This function gets alll bokings from the database */
-export async function getAllBookings() {
-	try {
-		const result = await api.get("/bookings/all-bookings", {
-			headers: getHeader()
-		})
-		return result.data
-	} catch (error) {
-		throw new Error(`Error fetching bookings : ${error.message}`)
-	}
+export const getAllBookings = async () => {
+  try {
+    const response = await api.get("/bookings/all-bookings", {
+      headers: getHeader()
+    })
+    return response.data
+  } catch (error) {
+    console.log("Error fetching bookings:", error);
+    throw error;
+  }
 }
+
 
 /* This function get booking by the cnfirmation code */
 export async function getBookingByConfirmationCode(confirmationCode) {

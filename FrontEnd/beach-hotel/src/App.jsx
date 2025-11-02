@@ -42,9 +42,12 @@ function App() {
 								</RequireAuth>
 							}
 						/>
-						<Route path="/browse-all-rooms" element={<RoomListing />} />
-
+						
 						<Route path="/admin" element={<Admin />} />
+
+
+
+						<Route path="/browse-all-rooms" element={<RoomListing />} />
 						<Route path="/booking-success" element={<BookingSuccess />} />
 						<Route path="/existing-bookings" element={<Bookings />} />
 						<Route path="/find-booking" element={<FindBooking />} />
