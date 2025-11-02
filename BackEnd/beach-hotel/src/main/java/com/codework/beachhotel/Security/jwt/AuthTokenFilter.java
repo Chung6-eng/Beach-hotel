@@ -35,8 +35,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         logger.info("Checking if should filter: {}", path);
 
-//        boolean skip = path.startsWith("/auth/") || path.startsWith("/bookings/");
-//        boolean skip = path.startsWith("/auth/") || path.startsWith("/rooms/");
         boolean skip = path.startsWith("/auth/");
 
         if (skip) {

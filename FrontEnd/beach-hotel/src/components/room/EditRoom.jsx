@@ -129,14 +129,14 @@ const handleSubmit = async (event) => {
             </div>
 
             <div className="mb-3 row">
-                            <label htmlFor="roomDescription" className="col-sm-3 col-form-label text-start">
+                            <label htmlFor="Description" className="col-sm-3 col-form-label text-start">
                                 Description
                             </label>
                             <div>
                                 <textarea
                                     className="form-control"
                                     id="roomDescription"
-                                    name="roomDescription"
+                                    name="description"
                                     rows="3"
                                     placeholder="Enter room description..."
                                     value={room.description ?? ""}

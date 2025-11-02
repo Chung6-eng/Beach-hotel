@@ -23,29 +23,31 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 
+
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/rooms")
-//@PreAuthorize("permitAll()")
 public class RoomController {
     private final IRoomService roomService;
     private final BookingService bookingService;
 
     @PostMapping("/add/new-room")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<RoomResponse> addNewRoom(
             @RequestParam("photo") MultipartFile photo,
             @RequestParam("roomType") String roomType,
-            @RequestParam("roomPrice") BigDecimal roomPrice) throws SQLException, IOException {
-        Room savedRoom = roomService.addNewRoom(photo, roomType,roomPrice);
+            @RequestParam("roomPrice") BigDecimal roomPrice,
+            @RequestParam("description") String description) throws SQLException, IOException {
+        Room savedRoom = roomService.addNewRoom(photo, roomType,roomPrice,description);
         byte[] photoBytes = photo.getBytes();
         RoomResponse reponse = new RoomResponse(
                 savedRoom.getId(),
                 savedRoom.getRoomType(),
                 savedRoom.getRoomPrice(),
                 savedRoom.isBoook(),
-                photoBytes
+                photoBytes,
+                savedRoom.getDescription()
         );
         return ResponseEntity.ok(reponse);
     }
@@ -90,7 +92,7 @@ public class RoomController {
 
 
     @DeleteMapping("/delete/room/{roomId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MANAGER')")
 
     public ResponseEntity<Void> deleteRoom(@PathVariable Long roomId) {
         roomService.deleteRoom(roomId);
@@ -98,13 +100,12 @@ public class RoomController {
 
     }
     @PutMapping("/update/{roomId}")
-    @PreAuthorize("hasRole('ADMIN')")
-
-    public ResponseEntity<RoomResponse> updateRoom(@PathVariable Long roomId,  @RequestParam(required = false) String roomType,@RequestParam(required = false) BigDecimal roomPrice,@RequestParam(required = false) MultipartFile photo) throws IOException, SQLException {
+    @PreAuthorize("hasRole('MANAGER')")
+    public ResponseEntity<RoomResponse> updateRoom(@PathVariable Long roomId,  @RequestParam(required = false) String roomType,@RequestParam(required = false) BigDecimal roomPrice,@RequestParam(required = false) MultipartFile photo, String description) throws IOException, SQLException {
         byte[] photoBytes = photo != null && !photo.isEmpty()?
                 photo.getBytes() : roomService.getRoomPhotoByRoomId(roomId);
         Blob photoBlob = photoBytes != null && photoBytes.length > 0 ? new SerialBlob(photoBytes) : null;
-        Room theRoom = roomService.updateRoom(roomId,roomType,roomPrice,photoBytes);
+        Room theRoom = roomService.updateRoom(roomId,roomType,roomPrice,photoBytes,description);
         theRoom.setPhoto(photoBlob);
         RoomResponse roomResponse = getRoomResponse(theRoom);
         return ResponseEntity.ok(roomResponse);
@@ -145,8 +146,6 @@ public class RoomController {
 
     private RoomResponse getRoomResponse(Room room) {
         List<BookedRoom> bookings = getAllBookingsByRoomId(room.getId());
-//        List<BookingResponse> bookingInfo = bookings.stream()
-//                .map(booking -> new BookingResponse(booking.getBookingId(),booking.getCheckInDate(), booking.getCheckOutDate(),booking.getBookingConfirmationCode())).toList();
         byte[] photoBytes = null;
         Blob photoBlob = room.getPhoto();
         if (photoBlob != null) {
@@ -159,7 +158,7 @@ public class RoomController {
         }
         return new RoomResponse(room.getId(),room.getRoomType(),
                 room.getRoomPrice(), room.isBoook(),
-                photoBytes);
+                photoBytes,room.getDescription());
     }
 
     private List<BookedRoom> getAllBookingsByRoomId(Long roomId) {

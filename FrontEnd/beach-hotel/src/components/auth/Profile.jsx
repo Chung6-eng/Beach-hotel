@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react"
 import { deleteUser, getBookingsByUserId, getUser } from "../utils/ApiFunctions"
 import { useNavigate } from "react-router-dom"
 import moment from "moment"
-
 const Profile = () => {
 	const [user, setUser] = useState({
 		id: "",
@@ -11,109 +10,99 @@ const Profile = () => {
 		lastName: "",
 		roles: [{ id: "", name: "" }]
 	})
-	
 
-	// 👉 Khởi tạo rỗng để tránh render dữ liệu giả
-	const [bookings, setBookings] = useState([]);
-
+	const [bookings, setBookings] = useState([])
 	const [message, setMessage] = useState("")
 	const [errorMessage, setErrorMessage] = useState("")
 	const navigate = useNavigate()
-
 	const userId = localStorage.getItem("userId")
 	const token = localStorage.getItem("token")
 
-	// 👉 Lấy thông tin user
+	// Fetch user info
 	useEffect(() => {
 		const fetchUser = async () => {
 			try {
-				const userData = await getUser(userId, token)
+				const userData = await getUser(userId)  // No token param needed
 				setUser(userData)
 			} catch (error) {
 				console.error("Error fetching user:", error)
-				setErrorMessage("Failed to load user info")
+				setErrorMessage("Failed to load user information")
 			}
 		}
-
 		if (userId && token) {
 			fetchUser()
 		}
 	}, [userId, token])
 
-	// 👉 Lấy danh sách bookings theo user
-	useEffect(() => {
-		const fetchBookings = async () => {
-			try {
-				const response = await getBookingsByUserId(userId, token)
-				setBookings(response.data)
-			} catch (error) {
-				console.error("Error fetching bookings:", error)
-				setErrorMessage("Failed to load bookings")
-			}
-		}
+	// Fetch bookings - Only one useEffect, using userId
+useEffect(() => {
+    const fetchBookings = async () => {
+        if (!token) {
+            setErrorMessage("You are not logged in");
+            return;
+        }
+        try {
+            const data = await getBookingsByUserId(user.email);
+            setBookings(data);
+        } catch (error) {
+            console.error("Error fetching bookings:", error);
+            if (error.response?.status === 401) {
+                setErrorMessage("Session expired. Logging out...");
+                // Clear storage and redirect immediately
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("userRole");
+                navigate("/login");  // Assuming your login route is /login
+            } else {
+                setErrorMessage("Failed to load booking history");
+            }
+        }
+    };
+    if (user.email && token) {
+        fetchBookings();
+    }
+}, [user.email, token, navigate]);
 
-		if (userId && token) {
-			fetchBookings()
-		}
-	}, [userId, token])
-
-	// 👉 Xóa tài khoản
 	const handleDeleteAccount = async () => {
 		const confirmed = window.confirm(
 			"Are you sure you want to delete your account? This action cannot be undone."
 		)
 		if (confirmed) {
 			try {
-				const response = await deleteUser(userId)
-				setMessage(response.data)
+				await deleteUser(user.email)
+				setMessage("Account deleted successfully")
 				localStorage.removeItem("token")
 				localStorage.removeItem("userId")
 				localStorage.removeItem("userRole")
 				navigate("/")
 				window.location.reload()
+			// eslint-disable-next-line no-unused-vars
 			} catch (error) {
-				console.error("Error deleting account:", error)
 				setErrorMessage("Failed to delete account")
 			}
 		}
 	}
 
-	useEffect(() => {
-  if (!user.email) return; // tránh gọi khi email chưa có
-  const fetchData = async () => {
-    try {
-      const data = await getBookingsByUserId(user.email);
-      setBookings(data || []);
-    } catch (err) {
-      console.error("Error fetching bookings:", err);
-      setBookings([]);
-    }
-  };
-
-  fetchData();
-}, [user.email]);
-
-
-
 	return (
 		<div className="container">
 			{errorMessage && <p className="text-danger">{errorMessage}</p>}
 			{message && <p className="text-success">{message}</p>}
-			{user ? (
+			{user.email ? (
 				<div className="card p-5 mt-5" style={{ backgroundColor: "whitesmoke" }}>
 					<h4 className="card-title text-center">User Information</h4>
 					<div className="card-body">
 						<div className="col-md-10 mx-auto">
-							{/* User Info */}
 							<div className="card mb-3 shadow">
 								<div className="row g-0">
-									<div className="col-md-2 d-flex justify-content-center align-items-center mb-4">
-										<img
-											src="https://themindfulaimanifesto.org/wp-content/uploads/2020/09/male-placeholder-image.jpeg"
-											alt="Profile"
-											className="rounded-circle"
-											style={{ width: "150px", height: "150px", objectFit: "cover" }}
-										/>
+									<div className="col-md-2">
+										<div className="d-flex justify-content-center align-items-center mb-4">
+											<img
+												src="https://themindfulaimanifesto.org/wp-content/uploads/2020/09/male-placeholder-image.jpeg"
+												alt="Profile"
+												className="rounded-circle"
+												style={{ width: "150px", height: "150px", objectFit: "cover" }}
+											/>
+										</div>
 									</div>
 
 									<div className="col-md-10">
@@ -166,9 +155,10 @@ const Profile = () => {
 									</div>
 								</div>
 							</div>
+
 							<h4 className="card-title text-center">Booking History</h4>
 
-							{bookings && bookings.length > 0 ? (
+							{bookings.length > 0 ? (
 								<table className="table table-bordered table-hover shadow">
 									<thead>
 										<tr>
@@ -184,20 +174,15 @@ const Profile = () => {
 									<tbody>
 										{bookings.map((booking, index) => (
 											<tr key={index}>
-												<td>{booking.bookingId}</td>
-												<td>{booking.room?.id || "N/A"}</td>
-												<td>{booking.room?.roomType || "N/A"}</td>
+												<td>{booking.id}</td>
+												<td>{booking.roomId}</td>
+												<td>{booking.room?.roomType}</td>
 												<td>
-  												{booking.checkInDate
-    											? moment(new Date(...booking.checkInDate)).format("MMM Do, YYYY")
-    											: "N/A"}
+													{moment(booking.checkInDate).format("MMM Do, YYYY")}
 												</td>
 												<td>
-  												{booking.checkOutDate
-    											? moment(new Date(...booking.checkOutDate)).format("MMM Do, YYYY")
-    											: "N/A"}
+													{moment(booking.checkOutDate).format("MMM Do, YYYY")}
 												</td>
-
 												<td>{booking.bookingConfirmationCode}</td>
 												<td className="text-success">On-going</td>
 											</tr>
@@ -209,9 +194,11 @@ const Profile = () => {
 							)}
 
 							<div className="d-flex justify-content-center">
-								<button className="btn btn-danger btn-sm" onClick={handleDeleteAccount}>
-									Close account
-								</button>
+								<div className="mx-2">
+									<button className="btn btn-danger btn-sm" onClick={handleDeleteAccount}>
+										Close account
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>

@@ -27,11 +27,14 @@ public class UserService implements IUserService {
 //    @Bean
 //    CommandLineRunner initRoles(RoleRepository roleRepository) {
 //        return args -> {
+//            if(!roleRepository.existsByName("ROLE_STAFF")) {
+//                roleRepository.save(new Role("ROLE_STAFF"));
+//            }
+//            if(!roleRepository.existsByName("ROLE_MANAGER")) {
+//                roleRepository.save(new Role("ROLE_MANAGER"));
+//            }
 //            if(!roleRepository.existsByName("ROLE_USER")) {
 //                roleRepository.save(new Role("ROLE_USER"));
-//            }
-//            if(!roleRepository.existsByName("ROLE_ADMIN")) {
-//                roleRepository.save(new Role("ROLE_ADMIN"));
 //            }
 //        };
 //    }
@@ -45,7 +48,7 @@ public class UserService implements IUserService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         System.out.println(user.getPassword());
-        Role userRole = roleRepository.findByName("ROLE_USER").get();
+        Role userRole = roleRepository.findByName("ROLE_MANAGER").get();
 
         user.setRoles(Collections.singletonList(userRole));
         return userRepository.save(user);

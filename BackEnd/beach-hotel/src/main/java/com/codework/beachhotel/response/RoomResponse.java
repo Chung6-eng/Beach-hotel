@@ -16,25 +16,33 @@ public class RoomResponse {
     private BigDecimal roomPrice;
     private boolean isBooked;
     private String photo;
+    private String description;
     private List<BookingResponse> bookings;
 
-    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, boolean book, byte[] photoBytes) {
+    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, boolean book, byte[] photoBytes,String description) {
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
         this.photo = photoBytes != null ? Base64.encodeBase64String(photoBytes) : null;
+        this.description = description;
 
     }
 
-    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, boolean isBooked, byte[] photoBytes, List<BookingResponse> bookings) {
+    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, boolean isBooked, byte[] photoBytes, List<BookingResponse> bookings,String description) {
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
         this.isBooked = isBooked;
         this.photo = photoBytes != null ? Base64.encodeBase64String(photoBytes) : null;
         this.bookings = bookings;
+        this.description = description;
     }
 
-    public RoomResponse(Long id, String roomType, BigDecimal roomPrice) {
+    public RoomResponse(Long id, String roomType, BigDecimal roomPrice,String description) {
+        this.id = id;
+        this.roomType = roomType;
+        this.roomPrice = roomPrice;
+        this.description = description;
+
     }
 }

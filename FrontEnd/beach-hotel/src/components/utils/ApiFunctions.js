@@ -1,6 +1,5 @@
 /* eslint-disable no-useless-catch */
 import axios from "axios"
-
 export const api = axios.create({
 	baseURL: "http://localhost:2204"
 })
@@ -87,24 +86,19 @@ export async function deleteRoom(roomId) {
 }
 /* This function update a room */
 export const updateRoom = async (roomId, formData) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token"); // hoặc nơi bạn lưu JWT
 
-  try {
-    const response = await axios.put(
-      `http://localhost:2204/rooms/${roomId}/update`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error updating room:", error);
-    throw error;
-  }
+  const response = await axios.put(
+    `http://localhost:2204/rooms/update/${roomId}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        "Authorization": `Bearer ${token}` // 🔹 quan trọng
+      },
+    }
+  );
+  return response.data;
 };
 
 
@@ -195,21 +189,6 @@ export async function registerUser(registration) {
 	}
 }
 
-/* This function login a registered user */
-export async function loginUser(login) {
-	try {
-		const response = await api.post("/auth/login", login)
-		if (response.status >= 200 && response.status < 300) {
-			return response.data
-		} else {
-			return null
-		}
-	} catch (error) {
-		console.error(error)
-		return null
-	}
-}
-
 /*  This is function to get the user profile */
 export async function getUserProfile(userId) {
 	try {
@@ -222,17 +201,6 @@ export async function getUserProfile(userId) {
 	}
 }
 
-/* This isthe function to delete a user */
-export async function deleteUser(userId) {
-	try {
-		const response = await api.delete(`/users/delete/${userId}`, {
-			headers: getHeader()
-		})
-		return response.data
-	} catch (error) {
-		return error.message
-	}
-}
 
 /* This is the function to get a single user */
 export async function getUser(userId) {
@@ -246,37 +214,49 @@ export async function getUser(userId) {
 	}
 }
 
-/* This is the function to get user bookings by the user id */
-export const getBookingsByUserId = async (email) => {
-  try {
-    const token = localStorage.getItem("token");
-    if (!token) throw new Error("No token found, please login.");
+export const loginUser = async (login) => {
+	console.log("🔄 Đang gọi API login:", login);
 
-    const response = await api.get(`/bookings/user/${email}/bookings`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching bookings:", error);
-    throw error;
-  }
+	try {
+		const response = await api.post("/auth/login", login);
+		console.log("✅ Token nhận được:", response.data);
+		return response.data;
+	} catch (error) {
+		console.error("❌ Login error:", error.response?.data || error.message);
+		return null;
+	}
 };
 
+export async function deleteUser(email) {
+  const token = localStorage.getItem("token")
+  const response = await fetch(`http://localhost:2204/users/delete/${email}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+  })
+
+  if (!response.ok) {
+    throw new Error("Failed to delete user")
+  }
+}
 
 
-// export const getBookingsByUserId = async () => {
-//   const token = localStorage.getItem("token"); // hoặc nơi bạn lưu token
-//   return await axios.get("http://localhost:2204/bookings/user/bookings", {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//       "Content-Type": "application/json",
-//     },
-//   });
-// };
+// ApiFunctions.js - Updated getBookingsByUserId to use userId instead of email
+export const getBookingsByUserId = async (userId) => {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No token, please login");
+
+  const response = await axios.get(
+    `http://localhost:2204/bookings/user/${userId}/bookings`,  // Changed from email to userId
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
 
 export const fetchRoomPriceById = async (roomId) => {
   const token = localStorage.getItem("token");
@@ -297,5 +277,28 @@ export const fetchRoomPriceById = async (roomId) => {
   }
 };
 
+export const getUserByEmail = async (email) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("Token is missing!");
+    throw new Error("Unauthorized!");
+  }
+
+  try {
+    const response = await axios.get(
+      `http://localhost:2204/users/email/${email}`, // ✅ Đổi thành endpoint đúng
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      }
+    )
+    return response.data
+  } catch (error) {
+    console.error("Lỗi lấy user:", error.response || error)
+    throw error
+  }
+}
 
 

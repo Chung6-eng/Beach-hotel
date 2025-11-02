@@ -20,14 +20,14 @@ public class UserController {
 
     // Lấy danh sách tất cả người dùng
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<List<User>> getUsers() {
         return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 
     // Lấy thông tin user theo email
     @GetMapping("/{email}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('MANAGER')")
     public ResponseEntity<?> getUserByEmail(@PathVariable("email") String email) {
         try {
             User theUser = userService.getUser(email);
@@ -41,10 +41,9 @@ public class UserController {
     }
 
     // Xóa user theo email hoặc id (nên thống nhất)
-    @DeleteMapping("/delete/{userId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #email == principal.username)")
-
-    public ResponseEntity<String> deleteUser(@PathVariable("userId") String email) {
+    @DeleteMapping("/delete/{email}")
+    @PreAuthorize("hasRole('MANAGER') or #email == authentication.name")
+    public ResponseEntity<String> deleteUser(@PathVariable("email") String email) {
         try {
             userService.deleteUser(email);
             return ResponseEntity.ok("User deleted successfully");
@@ -55,4 +54,5 @@ public class UserController {
                     .body("Error deleting user");
         }
     }
+
 }

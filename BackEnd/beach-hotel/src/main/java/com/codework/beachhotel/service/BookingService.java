@@ -35,11 +35,6 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public List<BookedRoom> getBookingsByUserEmail(String email) {
-        return List.of();
-    }
-
-    @Override
     public void cancelBooking(Long bookingId) {
         bookingRepository.deleteById(bookingId);
     }
@@ -49,7 +44,12 @@ public class BookingService implements IBookingService {
         return bookingRepository. findByRoomId(roomId);
     }
 
-
+    public List<BookedRoom> getBookingsByUserEmail(String email) {
+        System.out.println("Searching bookings for email: " + email);
+        List<BookedRoom> bookings = bookingRepository.findByGuestEmail(email);
+        System.out.println("Query returned: " + bookings.size() + " bookings");
+        return bookings;
+    }
 
     @Override
     public String saveBooking(Long roomId, BookedRoom bookingRequest) {

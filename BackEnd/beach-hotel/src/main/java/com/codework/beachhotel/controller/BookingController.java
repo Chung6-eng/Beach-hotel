@@ -27,7 +27,6 @@ public class BookingController {
     private final IBookingService bookingService;
     private final RoomService roomService;
 
-
     @GetMapping("all-bookings")
     public ResponseEntity<List<BookingResponse>> getAllBookings(){
         List<BookedRoom> bookings = bookingService.getAllBookings();
@@ -67,30 +66,48 @@ public class BookingController {
         bookingService.cancelBooking(bookingId);
     }
 
-    private BookingResponse getBookingResponse(BookedRoom booking) {
-        Room theRoom = roomService.getRoomById(booking.getRoom().getId()).get();
 
-        RoomResponse room = new RoomResponse(
-                theRoom.getId(),
-                theRoom.getRoomType(),
-                theRoom.getRoomPrice());
+
+    private BookingResponse getBookingResponse(BookedRoom booking) {
+        Room theRoom = roomService.getRoomById(booking.getRoom().getId()).orElse(null);
+        RoomResponse room = null;
+        if (theRoom != null) {
+            room = new RoomResponse(
+                    theRoom.getId(),
+                    theRoom.getRoomType(),
+                    theRoom.getRoomPrice(),
+                    theRoom.getDescription()
+            );
+        }
+
         return new BookingResponse(
                 booking.getBookingId(),
                 booking.getCheckInDate(),
-                booking.getCheckOutDate(), booking.getGuestFullName(),
-                booking.getGuestEmail(), booking.getNumberOfAdults(),
-                booking.getNumberOfChildren(), booking.getTotalNumberOfGuest(),
+                booking.getCheckOutDate(),
+                booking.getGuestFullName(),
+                booking.getGuestEmail(),
+                booking.getNumberOfAdults(),
+                booking.getNumberOfChildren(),
+                booking.getTotalNumberOfGuest(),
                 booking.getBookingConfirmationCode(),
-                theRoom.getId(),
-                room);
+                theRoom != null ? theRoom.getId() : null,
+                room
+        );
     }
 
-    @GetMapping("/user/bookings")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<BookedRoom>> getBookingsByUser(Authentication authentication) {
-        String email = authentication.getName(); // email của user đang login
+
+    @GetMapping("/user/{email}/bookings")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER','STAFF')")
+    public ResponseEntity<List<BookingResponse>> getBookingsByUser(@PathVariable String email, Authentication authentication) {
         List<BookedRoom> bookings = bookingService.getBookingsByUserEmail(email);
-        return ResponseEntity.ok(bookings);
+        System.out.println("Found " + bookings.size() + " bookings");
+
+        List<BookingResponse> bookingResponses = new ArrayList<>();
+        for (BookedRoom booking : bookings) {
+            BookingResponse bookingResponse = getBookingResponse(booking);  // Sử dụng method đã có
+            bookingResponses.add(bookingResponse);
+        }
+        return ResponseEntity.ok(bookingResponses);
     }
 
 }

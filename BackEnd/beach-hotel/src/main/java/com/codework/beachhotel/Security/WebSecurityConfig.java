@@ -55,23 +55,31 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // BẬT CORS
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Các endpoint công khai
+                        // 1. CÔNG KHAI - Không cần đăng nhập
                         .requestMatchers("/auth/**").permitAll()
+
+                        // 2. ROOMS - Công khai cho xem, MANAGER cho quản lý
+                        .requestMatchers("/rooms/add/**", "/rooms/delete/**", "/rooms/update/**").hasRole("MANAGER")
                         .requestMatchers("/rooms/**").permitAll()
-                        .requestMatchers("/bookings/**").authenticated()
 
-                        // Quyền admin
-                        .requestMatchers("/rooms/add/**", "/rooms/delete/**", "/rooms/update/**").hasRole("ADMIN")
-                        .requestMatchers("/roles/**").hasRole("ADMIN")
+                        // 3. BOOKINGS - Cần đăng nhập
+                        .requestMatchers("/bookings/room/*/booking").permitAll() // Đặt phòng công khai
+                        .requestMatchers("/bookings/confirmation/*").permitAll() // Xem confirmation công khai
+                        .requestMatchers("/bookings/all-bookings").hasRole("MANAGER") // Chỉ MANAGER xem tất cả
+                        .requestMatchers("/bookings/**").authenticated() // Các endpoint khác cần đăng nhập
 
-                        // Quyền USER/ADMIN cho người dùng
-                        .requestMatchers("/users/**").hasAnyRole("USER","ADMIN")
+                        // 4. USERS - Cần đăng nhập
+                        .requestMatchers("/users/**").hasAnyRole("USER", "MANAGER")
 
-                        // Các request khác phải xác thực
+                        // 5. ROLES - Chỉ MANAGER
+                        .requestMatchers("/roles/**").hasRole("MANAGER")
+
+                        // 6. TẤT CẢ các request khác - Cần đăng nhập
                         .anyRequest().authenticated()
                 );
 
@@ -84,7 +92,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOriginPattern("*"); // hoặc chỉ định domain cụ thể
+        configuration.addAllowedOriginPattern("*");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);
@@ -93,5 +101,4 @@ public class WebSecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }
