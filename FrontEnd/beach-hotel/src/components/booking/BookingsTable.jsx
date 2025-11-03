@@ -23,7 +23,7 @@ const BookingsTable = ({ bookingInfo, handleBookingCancellation }) => {
   });
 
   setFilteredBookings(filtered);
-};
+  };
 
   const totalNumberOfGuest = (booking) => {
     return booking.numOfAdults + booking.numOfChildren;
@@ -33,7 +33,7 @@ const BookingsTable = ({ bookingInfo, handleBookingCancellation }) => {
     <section className='p-4'>
       <DateSlider onDataChange={filterBookings} onFilterChange={filterBookings} />
       <table className='table table-bordered table-hover shadow'>
-        <thead>
+        <thead className='text-center'>
           <tr>
             <th>S/N</th>
             <th>Booking ID</th>

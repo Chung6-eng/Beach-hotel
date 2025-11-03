@@ -177,7 +177,7 @@ const handleSubmit = async (event) => {
             {/* Buttons */}
             <div className="d-flex justify-content-between mt-4">
               <Link
-                to="/existing-rooms"
+                to="/admin/existing-rooms"
                 className="btn btn-outline-info"
               >
                 Back

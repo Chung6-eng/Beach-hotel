@@ -157,7 +157,7 @@ const AddRoom = () => {
                         </div>
 
                         <div className="d-flex justify-content-start mt-2">
-                            <Link to={"/existing-rooms"} className="btn btn-outline-info me-2">
+                            <Link to={"/admin/existing-rooms"} className="btn btn-outline-info me-2">
                                 Back
                             </Link>
                             <button className="btn btn-outline-primary" type="submit">

@@ -27,7 +27,7 @@ public class BookingController {
     private final IBookingService bookingService;
     private final RoomService roomService;
 
-    @GetMapping("all-bookings")
+    @GetMapping("/all-bookings")
     @PreAuthorize("hasAnyRole('MANAGER','STAFF')")
     public ResponseEntity<List<BookingResponse>> getAllBookings(){
         List<BookedRoom> bookings = bookingService.getAllBookings();
