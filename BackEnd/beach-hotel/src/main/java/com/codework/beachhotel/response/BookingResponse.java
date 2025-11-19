@@ -24,13 +24,15 @@ public class BookingResponse {
     private String bookingConfirmationCode;
     private Long roomId;
     private RoomResponse room;
+    private Float totalPayment;
 
     // Constructor rút gọn (nếu chỉ muốn trả một số thông tin cơ bản)
-    public BookingResponse(Long id,RoomResponse room, LocalDate checkInDate, LocalDate checkOutDate, String bookingConfirmationCode) {
+    public BookingResponse(Long id,RoomResponse room, LocalDate checkInDate, LocalDate checkOutDate,Float totalPayment, String bookingConfirmationCode) {
         this.room = room;
         this.id = id;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
+        this.totalPayment =  totalPayment;
         this.bookingConfirmationCode = bookingConfirmationCode;
     }
 }

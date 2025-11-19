@@ -92,7 +92,8 @@ public class BookingController {
                 booking.getTotalNumberOfGuest(),
                 booking.getBookingConfirmationCode(),
                 theRoom != null ? theRoom.getId() : null,
-                room
+                room,
+                booking.getTotalPayment()
         );
     }
 

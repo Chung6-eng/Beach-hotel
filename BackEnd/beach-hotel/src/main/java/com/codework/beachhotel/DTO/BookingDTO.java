@@ -15,6 +15,7 @@ public class BookingDTO {
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private String bookingConfirmationCode;
+    private Float  totalPayment;
 
     public static BookingDTO fromEntity(BookedRoom booking) {
         BookingDTO dto = new BookingDTO();
@@ -26,6 +27,7 @@ public class BookingDTO {
         dto.numOfChildren = booking.getNumberOfChildren();
         dto.checkInDate = booking.getCheckInDate();
         dto.checkOutDate = booking.getCheckOutDate();
+        dto.totalPayment= booking.getTotalPayment();
         dto.bookingConfirmationCode = booking.getBookingConfirmationCode();
         return dto;
     }

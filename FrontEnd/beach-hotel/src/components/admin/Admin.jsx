@@ -16,10 +16,17 @@ const Admin = () => {
           <NavLink to="existing-bookings" className="admin-link">
             <i className="fa-solid fa-book"></i> Manage Bookings
           </NavLink>
+
+          <NavLink to="revenue-stats" className="admin-link">
+            <i className="fa-solid fa-chart-line"></i> Revenue Statistics
+          </NavLink>
+
+          <NavLink to="monthly-revenue" className="admin-link">
+            <i className="fa-solid fa-receipt"></i> Monthly Revenue
+          </NavLink>
         </nav>
       </aside>
 
-      {/* Main Content */}
       <main className="admin-main">
         <Outlet />
       </main>

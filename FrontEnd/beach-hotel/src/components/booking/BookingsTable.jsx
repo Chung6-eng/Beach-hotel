@@ -45,6 +45,7 @@ const BookingsTable = ({ bookingInfo, handleBookingCancellation }) => {
             <th>Adults</th>
             <th>Children</th>
             <th>Total Guest</th>
+            <th>Total Payment</th>
             <th>Confirmation Code</th>
             <th>Actions</th>
           </tr>
@@ -62,6 +63,7 @@ const BookingsTable = ({ bookingInfo, handleBookingCancellation }) => {
               <td>{booking.numOfAdults}</td>
               <td>{booking.numOfChildren}</td>
               <td>{totalNumberOfGuest(booking)}</td>
+              <td>${booking.totalPayment}</td>
               <td>{booking.bookingConfirmationCode}</td>
               <td>
                 <button className='btn btn-danger btn-sm'

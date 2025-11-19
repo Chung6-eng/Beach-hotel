@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 @Entity
@@ -45,6 +46,9 @@ public class BookedRoom {
     @Column(name = "confirmation_Code")
     private String bookingConfirmationCode;
 
+    @Column(name = "total_payment")
+    private Float totalPayment;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
@@ -52,18 +56,14 @@ public class BookedRoom {
 
     @PrePersist
     @PreUpdate
-    public void calculateTotalNumOfGuest() {
+    public void prePersistOrUpdate() {
         this.totalNumberOfGuest = this.numberOfAdults + this.numberOfChildren;
-    }
 
-    public void setNumOfAdults(int numOfAdults) {
-        numberOfAdults = numOfAdults;
-        calculateTotalNumOfGuest();
-    }
-
-    public void setNumOfChildren(int numOfChildren) {
-        numberOfChildren = numOfChildren;
-        calculateTotalNumOfGuest();
+        if (checkInDate != null && checkOutDate != null && room != null) {
+            long days = ChronoUnit.DAYS.between(checkInDate, checkOutDate);
+            if (days <= 0) days = 1; // phòng tối thiểu 1 ngày
+            this.totalPayment = days * room.getRoomPrice().floatValue();
+        }
     }
 }
 
