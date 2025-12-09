@@ -3,7 +3,6 @@ package com.codework.beachhotel.controller;
 import com.codework.beachhotel.service.RevenueService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 @RestController
 @RequestMapping("api/admin")

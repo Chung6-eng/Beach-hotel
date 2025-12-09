@@ -49,10 +49,13 @@ public class BookedRoom {
     @Column(name = "total_payment")
     private Float totalPayment;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
+
+    @Column(nullable = false)
+    private String status = "PENDING";
+
 
     @PrePersist
     @PreUpdate

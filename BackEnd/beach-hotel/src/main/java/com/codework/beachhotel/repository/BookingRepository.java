@@ -3,7 +3,9 @@ package com.codework.beachhotel.repository;
 import com.codework.beachhotel.model.BookedRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<BookedRoom, Long> {
@@ -52,5 +54,18 @@ public interface BookingRepository extends JpaRepository<BookedRoom, Long> {
     GROUP BY r.roomType
     """)
     List<Object[]> getRevenueByRoomType(int month, int year);
+
+    @Query("SELECT COUNT(b) > 0 FROM BookedRoom b " +
+            "WHERE b.room.id = :roomId " +
+            "AND b.guestEmail = :email " +
+            "AND b.checkOutDate > :checkIn " +
+            "AND b.checkInDate < :checkOut")
+    boolean existsDuplicateBooking(
+            @Param("roomId") Long roomId,
+            @Param("email") String email,
+            @Param("checkIn") LocalDate checkIn,
+            @Param("checkOut") LocalDate checkOut);
+
+
 
 }

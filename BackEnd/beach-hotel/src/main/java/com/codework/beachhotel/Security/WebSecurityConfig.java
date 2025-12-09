@@ -55,6 +55,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // BẬT CORS
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
@@ -62,6 +63,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 1. CÔNG KHAI - Không cần đăng nhập
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/bookings/*/availability").permitAll()
+                        .requestMatchers("/bookings/check-duplicate").authenticated()
 
                         // 2. ROOMS - Công khai cho xem, MANAGER cho quản lý
                         .requestMatchers("/rooms/add/**", "/rooms/delete/**", "/rooms/update/**").hasRole("MANAGER")
@@ -101,4 +104,5 @@ public class WebSecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 }

@@ -19,7 +19,7 @@ const FindBooking = () => {
 		numOfAdults: "",
 		numOfChildren: "",
 		totalNumOfGuest: "",
-		totaPayment: ""
+		totalPayment: ""
 	})
 
 	const emptyBookingInfo = {
@@ -126,7 +126,7 @@ setBookingInfo(data)
 						<p>Adults: {bookingInfo.numOfAdults}</p>
 						<p>Children: {bookingInfo.numOfChildren}</p>
 						<p>Total Guest: {bookingInfo.totalNumOfGuest}</p>
-						<p>Total Payment: {bookingInfo.totaPayment}</p>
+						<p>Total Payment: {bookingInfo.totalPayment}</p>
 
 						{!isDeleted && (
 							<button

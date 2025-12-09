@@ -68,8 +68,9 @@ public class UserService implements IUserService {
     @Transactional
     @Override
     public void deleteUser(String email) {
-        User theUser = getUser(email);
-
+        if (!userRepository.existsByEmail(email)) {
+            throw new UsernameNotFoundException("User không tồn tại với email: " + email);
+        }
         userRepository.deleteByEmail(email);
     }
 }

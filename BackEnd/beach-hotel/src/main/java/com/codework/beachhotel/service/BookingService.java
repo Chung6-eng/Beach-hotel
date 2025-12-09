@@ -9,6 +9,7 @@ import com.codework.beachhotel.repository.BookingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -28,6 +29,18 @@ public class BookingService implements IBookingService {
                 .toList();
     }
 
+    public boolean isRoomAvailable(Long roomId, LocalDate checkIn, LocalDate checkOut) {
+        List<BookedRoom> bookings = bookingRepository.findByRoomId(roomId);
+
+        for (BookedRoom booking : bookings) {
+            // Kiểm tra xung đột ngày
+            if ((checkIn.isBefore(booking.getCheckOutDate()) && checkOut.isAfter(booking.getCheckInDate())) ||
+                    checkIn.equals(booking.getCheckInDate()) || checkOut.equals(booking.getCheckOutDate())) {
+                return false; // phòng đã được đặt
+            }
+        }
+        return true; // phòng còn trống
+    }
 
     @Override
     public List<BookedRoom> getAllBookings() {
@@ -52,6 +65,29 @@ public class BookingService implements IBookingService {
     }
 
     @Override
+    public boolean checkDuplicate(Long roomId, String email, LocalDate checkIn, LocalDate checkOut) {
+
+        // Lấy tất cả booking của user theo email
+        List<BookedRoom> bookings = bookingRepository.findByGuestEmail(email);
+
+        // Kiểm tra xem có booking nào bị trùng ngày + cùng phòng
+        for (BookedRoom b : bookings) {
+
+            boolean sameRoom = b.getRoom().getId().equals(roomId);
+
+            boolean overlap = !(checkOut.isBefore(b.getCheckInDate()) ||
+                    checkIn.isAfter(b.getCheckOutDate()));
+
+            if (sameRoom && overlap) {
+                return true;   // ⛔ Có trùng
+            }
+        }
+
+        return false;  // ✔ Không trùng
+    }
+
+
+    @Override
     public String saveBooking(Long roomId, BookedRoom bookingRequest) {
         if (bookingRequest.getCheckOutDate().isBefore(bookingRequest.getCheckInDate())) {
             throw new InvalidBookingRequestException("Check In Date must come before Check Out Date");
@@ -74,34 +110,34 @@ public class BookingService implements IBookingService {
     }
 
 
-    private boolean roomIsAvailable(BookedRoom bookingRequest, List<BookedRoom> existingBookings) {
-        return existingBookings.stream()
-                .noneMatch(existingBooking ->
-                        bookingRequest.getCheckInDate().isBefore(existingBooking.getCheckOutDate())
-                                && bookingRequest.getCheckOutDate().isAfter(existingBooking.getCheckInDate())
-                );
-    }
-
 //    private boolean roomIsAvailable(BookedRoom bookingRequest, List<BookedRoom> existingBookings) {
 //        return existingBookings.stream()
 //                .noneMatch(existingBooking ->
-//                        (bookingRequest.getCheckInDate().equals(existingBooking.getCheckInDate()))
-//                                || bookingRequest.getCheckOutDate().isBefore(existingBooking.getCheckOutDate())
-//                                || (bookingRequest.getCheckInDate().isAfter(existingBooking.getCheckInDate())
-//                                && bookingRequest.getCheckInDate().isBefore(existingBooking.getCheckOutDate()))
-//                                || (bookingRequest.getCheckInDate().isBefore(existingBooking.getCheckInDate())
-//
-//                                && bookingRequest.getCheckOutDate().equals(existingBooking.getCheckOutDate()))
-//                                || (bookingRequest.getCheckInDate().isBefore(existingBooking.getCheckInDate())
-//
-//                                && bookingRequest.getCheckOutDate().isAfter(existingBooking.getCheckOutDate()))
-//
-//                                ||bookingRequest.getCheckInDate().equals(existingBooking.getCheckOutDate())
-//                                &&bookingRequest.getCheckOutDate().equals(existingBooking.getCheckInDate())
-//
-//                                || (bookingRequest.getCheckInDate().equals(existingBooking.getCheckOutDate())
-//                                && bookingRequest.getCheckOutDate().equals(bookingRequest.getCheckInDate()))
-//
+//                        bookingRequest.getCheckInDate().isBefore(existingBooking.getCheckOutDate())
+//                                && bookingRequest.getCheckOutDate().isAfter(existingBooking.getCheckInDate())
 //                );
 //    }
+
+    private boolean roomIsAvailable(BookedRoom bookingRequest, List<BookedRoom> existingBookings) {
+        return existingBookings.stream()
+                .noneMatch(existingBooking ->
+                        (bookingRequest.getCheckInDate().equals(existingBooking.getCheckInDate()))
+                                || bookingRequest.getCheckOutDate().isBefore(existingBooking.getCheckOutDate())
+                                || (bookingRequest.getCheckInDate().isAfter(existingBooking.getCheckInDate())
+                                && bookingRequest.getCheckInDate().isBefore(existingBooking.getCheckOutDate()))
+                                || (bookingRequest.getCheckInDate().isBefore(existingBooking.getCheckInDate())
+
+                                && bookingRequest.getCheckOutDate().equals(existingBooking.getCheckOutDate()))
+                                || (bookingRequest.getCheckInDate().isBefore(existingBooking.getCheckInDate())
+
+                                && bookingRequest.getCheckOutDate().isAfter(existingBooking.getCheckOutDate()))
+
+                                ||bookingRequest.getCheckInDate().equals(existingBooking.getCheckOutDate())
+                                &&bookingRequest.getCheckOutDate().equals(existingBooking.getCheckInDate())
+
+                                || (bookingRequest.getCheckInDate().equals(existingBooking.getCheckOutDate())
+                                && bookingRequest.getCheckOutDate().equals(bookingRequest.getCheckInDate()))
+
+                );
+    }
 }

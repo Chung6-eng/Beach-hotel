@@ -4,6 +4,7 @@ import com.codework.beachhotel.DTO.BookingDTO;
 import com.codework.beachhotel.model.BookedRoom;
 import com.codework.beachhotel.repository.BookingRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface IBookingService {
@@ -22,6 +23,9 @@ public interface IBookingService {
 
 //    private final BookingRepository bookingRepository;
     List<BookedRoom> getBookingsByUserEmail(String email);
+
+
+    boolean checkDuplicate(Long roomId, String email, LocalDate parse, LocalDate parse1);
     // Lấy danh sách bookings theo email user
 //    public List<BookedRoom> getBookingsByUserEmail(String email) {
 //        return bookingRepository.findByUserEmail(email);

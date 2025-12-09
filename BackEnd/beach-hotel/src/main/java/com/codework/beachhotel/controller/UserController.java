@@ -28,7 +28,6 @@ public class UserController {
     // Lấy thông tin user theo email
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{email}")
-//    @PreAuthorize("hasRole('USER') or hasRole('MANAGER')")
     public ResponseEntity<?> getUserByEmail(@PathVariable("email") String email) {
         try {
             User theUser = userService.getUser(email);

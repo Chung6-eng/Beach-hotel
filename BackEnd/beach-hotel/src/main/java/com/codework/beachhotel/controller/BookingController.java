@@ -16,8 +16,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @RequiredArgsConstructor
@@ -66,6 +69,32 @@ public class BookingController {
     public void cancelBooking(@PathVariable Long bookingId) {
         bookingService.cancelBooking(bookingId);
     }
+
+
+    @GetMapping("/check-duplicate")
+    @PreAuthorize("hasAnyRole('USER','MANAGER','STAFF')")
+    public ResponseEntity<?> checkDuplicateBooking(
+            @RequestParam Long roomId,
+            @RequestParam String email,
+            @RequestParam String checkIn,
+            @RequestParam String checkOut
+    ) {
+        try {
+            boolean duplicate = bookingService.checkDuplicate(
+                    roomId, email,
+                    LocalDate.parse(checkIn),
+                    LocalDate.parse(checkOut)
+            );
+
+            return ResponseEntity.ok(Map.of(
+                    "duplicate", duplicate,
+                    "message", duplicate ? "You already booked this room on these dates" : ""
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
+    }
+
 
 
 

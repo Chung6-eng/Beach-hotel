@@ -113,18 +113,33 @@ export async function getRoomById(roomId) {
 }
 
 /* This function saves a new booking to the databse */
-export async function bookRoom(roomId, booking) {
-	try {
-		const response = await api.post(`/bookings/room/${roomId}/booking`, booking,{ headers: getHeader() })
-		return response.data
-	} catch (error) {
-		if (error.response && error.response.data) {
-			throw new Error(error.response.data)
-		} else {
-			throw new Error(`Error booking room : ${error.message}`)
-		}
-	}
-}
+export const bookRoom = async (roomId, bookingData) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        throw new Error("Không tìm thấy token. Vui lòng đăng nhập lại.");
+    }
+
+    try {
+        const response = await axios.post(
+            `http://localhost:2204/bookings/room/${roomId}/booking`,
+            bookingData,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("API ERROR:", error.response);
+        throw new Error("Lỗi server: " + (error.response?.data || error.message));
+    }
+};
+
+
 
 /* This function gets alll bokings from the database */
 export const getAllBookings = async () => {
@@ -138,6 +153,40 @@ export const getAllBookings = async () => {
     throw error;
   }
 }
+
+export async function checkDuplicateBooking(roomId, email, checkIn, checkOut) {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(
+    `http://localhost:2204/bookings/check-duplicate?roomId=${roomId}&email=${email}&checkIn=${checkIn}&checkOut=${checkOut}`,
+    {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    }
+  );
+
+  const contentType = response.headers.get("content-type");
+
+  if (!response.ok) {
+    if (contentType && contentType.includes("application/json")) {
+      const err = await response.json();
+      throw new Error(err.message || "Server error");
+    } else {
+      throw new Error("Server returned HTML error page");
+    }
+  }
+
+  if (!contentType || !contentType.includes("application/json")) {
+    throw new Error("Invalid server response (not JSON)");
+  }
+
+  return await response.json();
+}
+
 
 
 /* This function get booking by the cnfirmation code */
@@ -179,17 +228,39 @@ export async function getAvailableRooms(checkInDate, checkOutDate, roomType) {
 
 /* This function register a new user */
 export async function registerUser(registration) {
-	try {
-		const response = await api.post("/auth/register-user", registration)
-		return response.data
-	} catch (error) {
-		if (error.response && error.response.data) {
-			throw new Error(error.response.data)
-		} else {
-			throw new Error(`User registration error : ${error.message}`)
-		}
-	}
+  try {
+    const response = await api.post("http://localhost:2204/auth/register-user", registration);
+    return response.data;
+  } catch (error) {
+    let message = "User registration error";
+
+    // Nếu backend trả về response
+    if (error.response) {
+      const data = error.response.data;
+
+      // Nếu backend trả về { message: "..." }
+      if (data && typeof data === "object" && data.message) {
+        message = data.message;
+      } 
+      // Nếu backend trả về string
+      else if (typeof data === "string") {
+        message = data;
+      } 
+      // Trường hợp khác
+      else {
+        message = JSON.stringify(data);
+      }
+    } 
+    // Nếu lỗi khác (network, axios)
+    else if (error.message) {
+      message = error.message;
+    }
+
+    throw new Error(message);
+  }
 }
+
+
 
 /*  This is function to get the user profile */
 export async function getUserProfile(userId) {

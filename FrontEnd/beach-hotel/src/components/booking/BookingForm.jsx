@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, FormControl, Button } from "react-bootstrap";
 import moment from "moment";
-import { fetchRoomPriceById } from "../utils/ApiFunctions";
+import { fetchRoomPriceById, checkDuplicateBooking } from "../utils/ApiFunctions";
 
 const BookingForm = ({ roomId, booking, setBooking, setIsValidated, setIsSubmitted, setPayment }) => {
   const [isValidated, setLocalValidated] = useState(false);
@@ -48,23 +48,47 @@ const BookingForm = ({ roomId, booking, setBooking, setIsValidated, setIsSubmitt
     return days * roomPrice;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    if (form.checkValidity() === false || !isGuestCountValid() || !isCheckOutDateValid()) {
-      e.stopPropagation();
-    } else {
-      try {
-       
-        setPayment(calculatePayment());
-        setIsSubmitted(true);
-      } catch (err) {
-        setErrorMessage(err.message);
-      }
-    }
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  const form = e.currentTarget;
+
+  // Kiểm tra HTML5 + validate custom
+  if (form.checkValidity() === false || !isGuestCountValid() || !isCheckOutDateValid()) {
+    e.stopPropagation();
     setLocalValidated(true);
     setIsValidated(true);
-  };
+    return;
+  }
+
+  try {
+
+    // 🔍 1. Kiểm tra trùng booking
+    const dup = await checkDuplicateBooking(
+      roomId,
+      booking.guestEmail,
+      booking.checkInDate,
+      booking.checkOutDate
+    );
+
+    if (dup.duplicate) {
+      setErrorMessage("Room unavailable for the selected dates.");   
+      return;                        
+    }
+
+    // 2️⃣ Tính tiền
+    setPayment(calculatePayment());
+
+    // 3️⃣ Cho phép chuyển bước tiếp theo
+    setIsSubmitted(true);
+
+  } catch (err) {
+    setErrorMessage(err.message || "Something went wrong!");
+  }
+
+  setLocalValidated(true);
+  setIsValidated(true);
+};
+
 
   return (
     <div className="card card-body">
