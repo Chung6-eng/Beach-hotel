@@ -314,7 +314,6 @@ export async function deleteUser(email) {
   }
 }
 
-
 // ApiFunctions.js - Updated getBookingsByUserId to use userId instead of email
 export const getBookingsByUserId = async (userId) => {
   const token = localStorage.getItem("token");

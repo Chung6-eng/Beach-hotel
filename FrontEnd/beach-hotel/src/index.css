@@ -189,14 +189,29 @@ body {
 
 /* The header banner */
 .header-banner {
-  background-image: url("./assets/images/Tokyo-Prince-Hotel-Tokyo-Japan-Swimming-pool1-2.jpg");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  width: 100%;
+  height: 100vh;
 
-   background-size: cover;
-   background-position: center;
-   position: relative;
-   width: 100%;
-   height: 80vh;
- }
+  animation: bannerSlide 15s infinite ease-in-out;
+}
+
+@keyframes bannerSlide {
+  0% {
+    background-image: url("./assets/images/7.webp");
+  }
+  33% {
+    background-image: url("./assets/images/6.webp");
+  }
+  66% {
+    background-image: url("./assets/images/4.webp");
+  }
+  100% {
+    background-image: url("./assets/images/5.webp");
+  }
+}
 
 .header-banner {
   position: relative;

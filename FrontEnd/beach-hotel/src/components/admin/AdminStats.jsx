@@ -35,12 +35,60 @@ const AdminStats = () => {
       });
   }, []);
 
-  // Hàm tính tổng doanh thu từ object
+  // 🔹 Tính tổng
   const getTotal = (obj) =>
     obj ? Object.values(obj).reduce((sum, val) => sum + val, 0) : 0;
 
+ // 🔹 SORT DỮ LIỆU
+const sortData = (obj, type) => {
+  if (!obj) return { labels: [], values: [] };
+
+  let entries = Object.entries(obj);
+
+  if (type === "year") {
+    entries.sort((a, b) => Number(a[0]) - Number(b[0]));
+  }
+
+if (type === "month") {
+  entries.sort((a, b) => {
+    const monthA = parseInt(a[0].replace(/\D/g, ""));
+    const monthB = parseInt(b[0].replace(/\D/g, ""));
+    return monthA - monthB;
+  });
+}
+
+
+
+  if (type === "day") {
+    const dayOrder = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ];
+
+    entries.sort(
+      (a, b) =>
+        dayOrder.indexOf(a[0]) - dayOrder.indexOf(b[0])
+    );
+  }
+
+  return {
+    labels: entries.map(e => e[0]),
+    values: entries.map(e => e[1])
+  };
+};
+
+
+  const dayData = sortData(stats.byDay, "day");
+  const monthData = sortData(stats.byMonth, "month");
+  const yearData = sortData(stats.byYear, "year");
+
   const barData = (labels, values) => ({
-    labels: labels,
+    labels,
     datasets: [
       {
         label: "Revenue",
@@ -71,44 +119,44 @@ const AdminStats = () => {
     <div className="container mt-4">
       <h2 className="text-center mb-4">📊 Revenue Statistics</h2>
 
+      {/* DAY */}
       <div className="card mb-4 p-3 shadow">
-        <h4 className="text-primary text-center">Revenue by Day of Week</h4>
+        <h4 className="text-primary text-center">
+          Revenue by Day of Week
+        </h4>
         <p className="text-center fw-bold">
           Total: ${getTotal(stats.byDay)}
         </p>
         <Bar
-          data={barData(
-            stats.byDay ? Object.keys(stats.byDay) : [],
-            stats.byDay ? Object.values(stats.byDay) : []
-          )}
+          data={barData(dayData.labels, dayData.values)}
           options={barOptions}
         />
       </div>
 
+      {/* MONTH */}
       <div className="card mb-4 p-3 shadow">
-        <h4 className="text-success text-center">Revenue by Month</h4>
+        <h4 className="text-success text-center">
+          Revenue by Month
+        </h4>
         <p className="text-center fw-bold">
           Total: ${getTotal(stats.byMonth)}
         </p>
         <Bar
-          data={barData(
-            stats.byMonth ? Object.keys(stats.byMonth) : [],
-            stats.byMonth ? Object.values(stats.byMonth) : []
-          )}
+          data={barData(monthData.labels, monthData.values)}
           options={barOptions}
         />
       </div>
 
+      {/* YEAR */}
       <div className="card mb-4 p-3 shadow">
-        <h4 className="text-danger text-center">Revenue by Year</h4>
+        <h4 className="text-dark text-center">
+          Revenue by Year
+        </h4>
         <p className="text-center fw-bold">
           Total: ${getTotal(stats.byYear)}
         </p>
         <Bar
-          data={barData(
-            stats.byYear ? Object.keys(stats.byYear) : [],
-            stats.byYear ? Object.values(stats.byYear) : []
-          )}
+          data={barData(yearData.labels, yearData.values)}
           options={barOptions}
         />
       </div>

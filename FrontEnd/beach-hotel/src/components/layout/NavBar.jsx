@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useState } from 'react';
+import { getUserRole } from "../utils/auth";
 
 const NavBar = () => {
     const [showAccount,setShowAccount] = useState(false)
@@ -8,6 +9,10 @@ const NavBar = () => {
     const handleAccountClick = ()=>{
         setShowAccount(!showAccount)
     }
+
+  const roles = getUserRole();
+  const isAdmin = roles.includes("ROLE_MANAGER") || roles.includes("ROLE_STAFF");
+
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary shadow sticky-top ">
       <div className='container-fluid '>
@@ -35,11 +40,13 @@ const NavBar = () => {
                 Browse all rooms
               </NavLink>
             </li>
-            <li className='nav-item'>
-              <NavLink className="nav-link" aria-current="page" to="/admin">
-                Admin
-              </NavLink>
-            </li>
+           {isAdmin && (
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/admin">
+                  Admin
+                </NavLink>
+              </li>
+            )}
           </ul>
 
           {/* Right side */}

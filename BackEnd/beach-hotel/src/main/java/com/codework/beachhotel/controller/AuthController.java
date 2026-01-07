@@ -39,7 +39,6 @@ public class AuthController {
             // Email đã tồn tại
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (Exception e) {
-            // Các lỗi khác
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi server: " + e.getMessage());
         }
     }

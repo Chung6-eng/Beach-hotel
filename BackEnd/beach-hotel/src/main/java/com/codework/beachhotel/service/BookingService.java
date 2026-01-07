@@ -66,7 +66,6 @@ public class BookingService implements IBookingService {
 
     @Override
     public boolean checkDuplicate(Long roomId, String email, LocalDate checkIn, LocalDate checkOut) {
-
         // Lấy tất cả booking của user theo email
         List<BookedRoom> bookings = bookingRepository.findByGuestEmail(email);
 
@@ -79,7 +78,7 @@ public class BookingService implements IBookingService {
                     checkIn.isAfter(b.getCheckOutDate()));
 
             if (sameRoom && overlap) {
-                return true;   // ⛔ Có trùng
+                return true;
             }
         }
 
