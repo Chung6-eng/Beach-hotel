@@ -42,8 +42,6 @@ export const addRoom = async (photo, roomType, roomPrice, description) => {
 };
 
 
-
-
 /* This function gets all room types from thee database */
 export async function getRoomTypes() {
   try {
