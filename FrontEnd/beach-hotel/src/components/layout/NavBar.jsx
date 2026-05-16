@@ -11,7 +11,7 @@ const NavBar = () => {
     }
 
   const roles = getUserRole();
-  const isAdmin = roles.includes("ROLE_MANAGER") || roles.includes("ROLE_STAFF");
+  const isAdmin = roles?.includes("ROLE_MANAGER") || roles?.includes("ROLE_STAFF");
 
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary shadow sticky-top ">
