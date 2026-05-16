@@ -1,17 +1,16 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useState } from 'react';
-import { getUserRole } from "../utils/auth";
-
+import { useAuth } from "../auth/AuthProvider";
 const NavBar = () => {
     const [showAccount,setShowAccount] = useState(false)
-
+    const { user, handleLogout } = useAuth();
     const handleAccountClick = ()=>{
         setShowAccount(!showAccount)
     }
 
-  const roles = getUserRole();
-  const isAdmin = roles?.includes("ROLE_MANAGER") || roles?.includes("ROLE_STAFF");
+    const roles = user?.roles ?? "";
+    const isAdmin = roles.includes("ROLE_MANAGER") || roles.includes("ROLE_STAFF");
 
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary shadow sticky-top ">
@@ -80,7 +79,7 @@ const NavBar = () => {
                 </li>
                 <hr />
                 <li>
-                  <Link to="/logout" className='dropdown-item'>Logout</Link>
+                  <Link to="/logout" className='dropdown-item' onClick={handleLogout}>Logout</Link>
                 </li>
               </ul>
             </li>
