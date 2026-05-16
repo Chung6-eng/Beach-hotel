@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-catch */
 import axios from "axios"
 export const api = axios.create({
-	baseURL: "http://localhost:2204"
+	baseURL: import.meta.env.VITE_API_BASE_URL
 })
 
 export const getHeader = () => {
@@ -11,6 +11,8 @@ export const getHeader = () => {
 		"Content-Type": "application/json"
 	}
 }
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 export const addRoom = async (photo, roomType, roomPrice, description) => {
   const token = localStorage.getItem("token");
@@ -24,7 +26,7 @@ export const addRoom = async (photo, roomType, roomPrice, description) => {
 
   try {
     const response = await axios.post(
-      "http://localhost:2204/rooms/add/new-room",
+      `${BASE_URL}/rooms/add/new-room`,
       formData,
       {
         headers: {
@@ -87,7 +89,7 @@ export const updateRoom = async (roomId, formData) => {
   const token = localStorage.getItem("token"); // hoặc nơi bạn lưu JWT
 
   const response = await axios.put(
-    `http://localhost:2204/rooms/update/${roomId}`,
+    `${BASE_URL}/rooms/update/${roomId}`,
     formData,
     {
       headers: {
@@ -120,7 +122,7 @@ export const bookRoom = async (roomId, bookingData) => {
 
     try {
         const response = await axios.post(
-            `http://localhost:2204/bookings/room/${roomId}/booking`,
+            `${import.meta.env.VITE_API_BASE_URL}/bookings/room/${roomId}/booking`,
             bookingData,
             {
                 headers: {
@@ -156,7 +158,7 @@ export async function checkDuplicateBooking(roomId, email, checkIn, checkOut) {
   const token = localStorage.getItem("token");
 
   const response = await fetch(
-    `http://localhost:2204/bookings/check-duplicate?roomId=${roomId}&email=${email}&checkIn=${checkIn}&checkOut=${checkOut}`,
+    `${BASE_URL}/bookings/check-duplicate?roomId=${roomId}&email=${email}&checkIn=${checkIn}&checkOut=${checkOut}`,
     {
       method: "GET",
       headers: {
@@ -227,7 +229,7 @@ export async function getAvailableRooms(checkInDate, checkOutDate, roomType) {
 /* This function register a new user */
 export async function registerUser(registration) {
   try {
-    const response = await api.post("http://localhost:2204/auth/register-user", registration);
+    const response = await api.post(`${BASE_URL}/auth/register-user`, registration);
     return response.data;
   } catch (error) {
     let message = "User registration error";
@@ -300,7 +302,7 @@ export const loginUser = async (login) => {
 
 export async function deleteUser(email) {
   const token = localStorage.getItem("token")
-  const response = await fetch(`http://localhost:2204/users/delete/${email}`, {
+  const response = await fetch(`${BASE_URL}/users/delete/${email}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -318,7 +320,7 @@ export const getBookingsByUserId = async (userId) => {
   if (!token) throw new Error("No token, please login");
 
   const response = await axios.get(
-    `http://localhost:2204/bookings/user/${userId}/bookings`,  // Changed from email to userId
+    `${BASE_URL}/bookings/user/${userId}/bookings`,  // Changed from email to userId
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -336,7 +338,7 @@ export const fetchRoomPriceById = async (roomId) => {
   }
 
   try {
-    const response = await axios.get(`http://localhost:2204/rooms/${roomId}/price`, {
+    const response = await axios.get(`${BASE_URL}/rooms/${roomId}/price`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -356,7 +358,7 @@ export const getUserByEmail = async (email) => {
 
   try {
     const response = await axios.get(
-      `http://localhost:2204/users/email/${email}`, // ✅ Đổi thành endpoint đúng
+      `${BASE_URL}/users/email/${email}`, // ✅ Đổi thành endpoint đúng
       {
         headers: {
           Authorization: `Bearer ${token}`,
