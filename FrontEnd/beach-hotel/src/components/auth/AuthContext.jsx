@@ -1,9 +1,27 @@
-import React, { useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 
+export const AuthContext = createContext({
+  user: null,
+  handleLogin: () => {},
+  handleLogout: () => {}
+});
 
-export const AuthContext = ({ children }) => {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decodedUser = jwt_decode(token);
+        setUser(decodedUser);
+      } catch (err) {
+        console.error("Invalid token:", err);
+        handleLogout();
+      }
+    }
+  }, []);
 
   const handleLogin = (token) => {
     const decodedUser = jwt_decode(token);
@@ -21,14 +39,11 @@ export const AuthContext = ({ children }) => {
   };
 
   return (
-    <AuthContext.Context value={{ user, handleLogin, handleLogout }}>
+    <AuthContext.Provider value={{ user, handleLogin, handleLogout }}>
       {children}
-    </AuthContext.Context>
+    </AuthContext.Provider>
   );
 };
 
-
 // eslint-disable-next-line react-refresh/only-export-components
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);
