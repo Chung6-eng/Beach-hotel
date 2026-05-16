@@ -18,7 +18,7 @@ import FindBooking from "./components/booking/FindBooking"
 import Login from "./components/auth/Login"
 import Registration from "./components/auth/Registration"
 import Profile from "./components/auth/Profile"
-import { AuthProvider } from "./components/auth/AuthProvider"
+import { AuthProvider } from "./components/auth/AuthContext.jsx"
 import RequireAuth from "./components/auth/RequireAuth"
 import AdminStats from "./components/admin/AdminStats";
 import TotalRevenue from "./components/admin/TotalRevenue";

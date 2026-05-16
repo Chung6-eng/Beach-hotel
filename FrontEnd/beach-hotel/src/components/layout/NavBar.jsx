@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useState } from 'react';
-import { useAuth } from "../auth/AuthProvider";
+import { useAuth } from "../auth/useAuth";
 const NavBar = () => {
     const [showAccount,setShowAccount] = useState(false)
     const { user, handleLogout } = useAuth();
