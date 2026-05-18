@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import BookingForm from "./BookingForm";
-import { getRoomById, bookRoom } from "../utils/ApiFunctions";
+import { getRoomById, bookRoom } from "../services/roomService";
 import {
   FaTv,
   FaUtensils,

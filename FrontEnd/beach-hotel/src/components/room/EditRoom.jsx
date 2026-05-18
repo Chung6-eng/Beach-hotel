@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { getRoomById, updateRoom} from "../utils/ApiFunctions"
+import { getRoomById, updateRoom} from "../services/roomService";
 import { Link, useParams } from "react-router-dom";
 import { useEffect } from 'react';
 const EditRoom = () => {

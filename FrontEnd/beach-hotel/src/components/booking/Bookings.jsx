@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import ExistingRoom from '../room/ExistingRooms';
-import {cancelBooking, getAllBookings} from "../utils/ApiFunctions"
+import {cancelBooking, getAllBookings} from "../services/bookingService"
 import Header from "../common/Header"
 import BookingsTable from "./BookingsTable"
 

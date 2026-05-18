@@ -1,6 +1,4 @@
-import React from 'react'
-import "../node_modules/bootstrap/dist/css/bootstrap.min.css"
-import "../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+import React from 'react';
 import './App.css';
 import AddRoom from "./components/room/AddRoom";
 import ExistingRooms from "./components/room/ExistingRooms.jsx";
@@ -22,7 +20,8 @@ import { AuthProvider } from "./components/auth/AuthContext.jsx"
 import RequireAuth from "./components/auth/RequireAuth"
 import AdminStats from "./components/admin/AdminStats";
 import TotalRevenue from "./components/admin/TotalRevenue";
-
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
 function App() {
 	return (
@@ -61,7 +60,7 @@ function App() {
 						<Route path="/register" element={<Registration />} />
 
 						<Route path="/profile" element={<Profile />} />
-						<Route path="/logout" element={<FindBooking />} />
+						<Route path="/logout" element={<Login />} />
 					</Routes>
 				</Router>
 				<Footer />

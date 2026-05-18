@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext({
   user: null,
   handleLogin: () => {},

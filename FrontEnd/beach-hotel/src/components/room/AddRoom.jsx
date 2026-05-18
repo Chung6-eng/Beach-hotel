@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { addRoom } from "../utils/ApiFunctions";
+import { addRoom } from "../services/roomService";
 import RoomTypeSelector from "../common/RoomTypeSelector";
 import { Link } from "react-router-dom";
 

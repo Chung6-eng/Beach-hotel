@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, FormControl, Button } from "react-bootstrap";
 import moment from "moment";
-import { fetchRoomPriceById, checkDuplicateBooking } from "../utils/ApiFunctions";
+import { fetchRoomPriceById, checkDuplicateBooking } from "../services/roomService";
 
 const BookingForm = ({ roomId, booking, setBooking, setIsValidated, setIsSubmitted, setPayment }) => {
   const [isValidated, setLocalValidated] = useState(false);

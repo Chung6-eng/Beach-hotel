@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAllRooms } from '../utils/ApiFunctions'; 
+import { getAllRooms } from '../services/roomService'; 
 import { Container, Card, Carousel, Row, Col } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 

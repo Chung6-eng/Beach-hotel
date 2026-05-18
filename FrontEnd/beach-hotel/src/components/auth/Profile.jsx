@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { deleteUser, getBookingsByUserId, getUser } from "../utils/ApiFunctions"
+import { deleteUser, getBookingsByUserId, getUser } from "../../services/authService.js"
 import { useNavigate } from "react-router-dom"
 import moment from "moment"
 const Profile = () => {
