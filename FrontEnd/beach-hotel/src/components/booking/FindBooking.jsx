@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import moment from "moment"
-import { cancelBooking, getBookingByConfirmationCode } from "../services/bookingService"
+import { cancelBooking, getBookingByConfirmationCode } from "../../services/bookingService"
 
 const FindBooking = () => {
 	const [confirmationCode, setConfirmationCode] = useState("")

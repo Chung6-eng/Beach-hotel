@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { deleteUser, getBookingsByUserId, getUser } from "../../services/authService.js"
+import { deleteUser, getUser } from "../../services/authService.js"
+import { getBookingsByUserId } from "../../services/bookingService.js"
 import { useNavigate } from "react-router-dom"
 import moment from "moment"
 const Profile = () => {
@@ -42,7 +43,7 @@ const Profile = () => {
 				return;
 			}
 			try {
-				const data = await getBookingsByUserId(user.email);
+				const data = await getBookingsByUserId(userId);
 				setBookings(data);
 			} catch (error) {
 				console.error("Error fetching bookings:", error);
@@ -58,10 +59,10 @@ const Profile = () => {
 				}
 			}
 		};
-		if (user.email && token) {
+		if (userId && token) {
 			fetchBookings();
 		}
-	}, [user.email, token, navigate]);
+	}, [userId, token, navigate]);
 
 	const handleDeleteAccount = async () => {
 		const confirmed = window.confirm(

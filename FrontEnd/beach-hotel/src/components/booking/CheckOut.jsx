@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import BookingForm from "./BookingForm";
-import { getRoomById, bookRoom } from "../services/roomService";
+import { getRoomById } from "../../services/roomService";
+import { bookRoom } from "../../services/bookingService";
 import {
   FaTv,
   FaUtensils,
