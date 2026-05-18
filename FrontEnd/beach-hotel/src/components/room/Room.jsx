@@ -15,7 +15,7 @@ const Room = () => {
     const[isLoading,setIsLoading] = useState(false)
     const[currentPage,setCurrentPage] = useState(1)
     const[roomsPerPage] = useState(6);
-    const[filteredData,setFilteredData] = useState([{id:""}])
+    const [filteredData, setFilteredData] = useState([]) // bỏ [{id:""}]
 
     useEffect(()=>{
         setIsLoading(true)
@@ -43,9 +43,12 @@ const Room = () => {
     const renderRooms =() => {
         const startIndex = (currentPage -1) * roomsPerPage
         const endIndex = startIndex + roomsPerPage
-        return filteredData.slice(startIndex, endIndex).map((room)=>
-            <RoomCard key={room.id} room={room}/>)
+         return (Array.isArray(filteredData) ? filteredData : [])
+        .slice(startIndex, endIndex)
+        .map((room) => <RoomCard key={room.id} room={room} />)
     }
+
+    
     return (<Container> 
         <Row>  
             <Col md={6} className='mb-3 mb-md-0'>

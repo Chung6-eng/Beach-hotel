@@ -4,7 +4,7 @@ import { Container, Card, Carousel, Row, Col } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 
 const RoomCarausel = () => {
-    const [rooms, setRoom] = useState([{ id: "", roomType: "", roomPrice: "", photo: "" }]);
+    const [rooms, setRoom] = useState([])
     const [errorMessage, setErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
