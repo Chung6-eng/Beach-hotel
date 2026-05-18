@@ -59,7 +59,16 @@ export async function getAllRooms() {
     const result = await api.get("/rooms/all-rooms", {
       headers: getHeader()
     })
-    return result.data
+    
+    const data = result.data
+    
+    // Trả về đúng array tùy theo format backend
+    if (Array.isArray(data)) return data
+    if (Array.isArray(data?.data)) return data.data
+    if (Array.isArray(data?.rooms)) return data.rooms
+    if (Array.isArray(data?.content)) return data.content // Spring Boot
+    
+    return [] // fallback
   } catch (error) {
     console.error("Error fetching rooms:", error.response || error.message)
     throw error

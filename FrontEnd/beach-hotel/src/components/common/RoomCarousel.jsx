@@ -12,8 +12,9 @@ const RoomCarausel = () => {
         setIsLoading(true);
         getAllRooms()
             .then((data) => {
-                setRoom(data);
-                setIsLoading(false);
+                 console.log("data:", data, "isArray:", Array.isArray(data)); // 👈
+        setRoom(Array.isArray(data) ? data : []); // ✅ guard tạm thời
+        setIsLoading(false);
             })
             .catch((error) => {
                 setErrorMessage(error.message);
