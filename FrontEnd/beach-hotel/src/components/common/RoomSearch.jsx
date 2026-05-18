@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Form, Button, Row, Col, Container } from "react-bootstrap"
 import moment from "moment"
-import { getAvailableRooms } from "../services/roomService"
+import { getAvailableRooms } from "../../services/roomService"
 import RoomSearchResults from "./RoomSearchResult"
 import RoomTypeSelector from "./RoomTypeSelector"
 
