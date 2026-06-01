@@ -4,7 +4,7 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 
 pdfMake.vfs = pdfFonts.vfs;
-const BASE_URL = import.meta.env.VITE_API_BASE_URL
+const BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").trim().replace(/\/+$/, "")
 
 const TotalRevenue = () => {
   const [month, setMonth] = useState(new Date().getMonth() + 1);

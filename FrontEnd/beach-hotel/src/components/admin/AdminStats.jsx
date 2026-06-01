@@ -12,6 +12,8 @@ import {
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
+const BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").trim().replace(/\/+$/, "")
+
 const AdminStats = () => {
   const [stats, setStats] = useState({
     byDay: {},
@@ -20,7 +22,7 @@ const AdminStats = () => {
   });
   const [error, setError] = useState(null);
 
-  const API_URL = "http://localhost:2204/api/admin/revenue";
+  const API_URL = `${BASE_URL}/api/admin/revenue`;
   const token = localStorage.getItem("token");
 
   useEffect(() => {
