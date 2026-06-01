@@ -4,6 +4,8 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 
 pdfMake.vfs = pdfFonts.vfs;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL
+
 const TotalRevenue = () => {
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(new Date().getFullYear());
@@ -19,7 +21,7 @@ const TotalRevenue = () => {
 
   const fetchRevenue = async () => {
     try {
-      const response = await axios.get("http://localhost:2204/api/admin/monthly-revenue-details", {
+      const response = await axios.get(`${BASE_URL}/api/admin/monthly-revenue-details`, {
         params: { month, year },
         headers: { Authorization: `Bearer ${token}` }
       });
