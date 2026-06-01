@@ -26,7 +26,7 @@ public class CorsConfig {
 
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:5174");
-        config.addAllowedOrigin("https://beach-hotel-chung2k6.vercel.app");
+        config.addAllowedOrigin("https://beachhotelchung2k6.com/");
         config.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
